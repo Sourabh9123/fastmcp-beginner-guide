@@ -27,9 +27,12 @@ templates, prompts, client roots, elicitation, and OpenAI-backed MCP sampling.
 │   ├── server.py
 │   └── clients/
 │       ├── common.py
+│       ├── openai_agent_flow.py
 │       ├── stdio_client.py
 │       └── http_client.py
-└── tests/test_server.py
+└── tests/
+    ├── test_openai_agent_flow.py
+    └── test_server.py
 ```
 
 ## Setup
@@ -58,6 +61,37 @@ export OPENAI_MODEL="gpt-5.2"
 
 The non-LLM examples run without an OpenAI key. The `ask_llm` example uses MCP
 sampling and needs `OPENAI_API_KEY`.
+
+## Run The OpenAI Agent Flow
+
+This example shows the flow most people mean when they ask, "How does an LLM use
+my MCP server?"
+
+```bash
+python -m fastmcp_learning.clients.openai_agent_flow
+```
+
+What happens:
+
+1. The client starts the FastMCP server locally over `stdio`.
+2. The client lists the MCP tools exposed by the server.
+3. The client converts selected MCP tools into OpenAI function tools.
+4. The client reads an MCP resource and renders an MCP prompt for extra context.
+5. OpenAI decides which MCP tools to call.
+6. The client runs those tool calls against the MCP server.
+7. Tool results are sent back to OpenAI.
+8. OpenAI writes the final answer.
+
+Try your own task:
+
+```bash
+python -m fastmcp_learning.clients.openai_agent_flow \
+  --question "Use MCP tools to explain resources and calculate 8 + 13"
+```
+
+This demo exposes only the safe automatic tools: `add`, `explain_component`, and
+`list_client_roots`. The server also has interactive examples like elicitation
+and sampling, but those are easier to understand after the basic tool-call loop.
 
 ## Run Locally With Stdio
 

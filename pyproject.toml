@@ -21,6 +21,7 @@ dev = [
 mcp-learning-server = "fastmcp_learning.server:main"
 mcp-learning-stdio-client = "fastmcp_learning.clients.stdio_client:main"
 mcp-learning-http-client = "fastmcp_learning.clients.http_client:main"
+mcp-learning-openai-agent = "fastmcp_learning.clients.openai_agent_flow:main"
 
 [tool.ruff]
 line-length = 100
