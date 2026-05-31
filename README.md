@@ -62,6 +62,24 @@ export OPENAI_MODEL="gpt-5.2"
 The non-LLM examples run without an OpenAI key. The `ask_llm` example uses MCP
 sampling and needs `OPENAI_API_KEY`.
 
+## How The Pieces Connect
+
+```mermaid
+flowchart LR
+    User[User terminal] --> AgentClient[openai_agent_flow.py]
+    AgentClient -->|starts local process| MCPServer[FastMCP server.py]
+    AgentClient -->|sends prompt and function schemas| OpenAI[OpenAI Responses API]
+    OpenAI -->|requests function calls| AgentClient
+    AgentClient -->|client.call_tool| MCPServer
+    MCPServer --> Tools[Tools: add, explain_component, list_client_roots]
+    MCPServer --> Resources[Resources: learning://guide, learning://catalog, learning://topic]
+    MCPServer --> Prompts[Prompts: teach_mcp_concept, code_review_prompt]
+    MCPServer -->|tool result| AgentClient
+    AgentClient -->|function_call_output| OpenAI
+    OpenAI -->|final answer| AgentClient
+    AgentClient --> User
+```
+
 ## Run The OpenAI Agent Flow
 
 This example shows the flow most people mean when they ask, "How does an LLM use
@@ -81,6 +99,31 @@ What happens:
 6. The client runs those tool calls against the MCP server.
 7. Tool results are sent back to OpenAI.
 8. OpenAI writes the final answer.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User
+    participant Client as openai_agent_flow.py
+    participant MCP as FastMCP server
+    participant LLM as OpenAI Responses API
+
+    User->>Client: Run agent-flow command
+    Client->>MCP: Start server over stdio
+    Client->>MCP: list_tools()
+    MCP-->>Client: Tool names and JSON schemas
+    Client->>MCP: read_resource("learning://guide")
+    MCP-->>Client: Learning guide context
+    Client->>MCP: get_prompt("teach_mcp_concept")
+    MCP-->>Client: Rendered prompt text
+    Client->>LLM: User question + MCP context + tool schemas
+    LLM-->>Client: function_call add/explain_component
+    Client->>MCP: call_tool(name, arguments)
+    MCP-->>Client: Tool result
+    Client->>LLM: function_call_output
+    LLM-->>Client: Final answer for user
+    Client-->>User: Print answer and each tool step
+```
 
 Try your own task:
 
