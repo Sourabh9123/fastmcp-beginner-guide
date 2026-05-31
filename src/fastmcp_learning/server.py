@@ -48,7 +48,7 @@ class ProjectPreferences:
     include_tests: bool
 
 
-@mcp.tool
+@mcp.tool(run_in_thread=False)
 def add(a: int, b: int) -> int:
     """Add two integers.
 
@@ -60,7 +60,7 @@ def add(a: int, b: int) -> int:
     return a + b
 
 
-@mcp.tool
+@mcp.tool(run_in_thread=False)
 def explain_component(component: Literal["tools", "resources", "prompts"], detail: str = "short") -> str:
     """Explain one core MCP component in learner-friendly language."""
 
@@ -134,7 +134,7 @@ async def ask_llm(question: str, ctx: Context) -> str:
 
 
 @mcp.resource("learning://guide", mime_type="text/markdown")
-def learning_guide() -> str:
+async def learning_guide() -> str:
     """Return a small static guide to the examples in this server."""
 
     return "\n".join(
@@ -151,7 +151,7 @@ def learning_guide() -> str:
 
 
 @mcp.resource("learning://catalog", mime_type="application/json")
-def learning_catalog() -> str:
+async def learning_catalog() -> str:
     """Return the available learning topics as JSON."""
 
     return json.dumps(
@@ -164,7 +164,7 @@ def learning_catalog() -> str:
 
 
 @mcp.resource("learning://topic/{topic}{?detail}", mime_type="application/json")
-def learning_topic(topic: str, detail: str = "short") -> str:
+async def learning_topic(topic: str, detail: str = "short") -> str:
     """Return a parameterized learning note for a topic."""
 
     selected = LEARNING_NOTES.get(topic.lower())
@@ -190,7 +190,7 @@ def learning_topic(topic: str, detail: str = "short") -> str:
 
 
 @mcp.prompt
-def teach_mcp_concept(concept: str, audience: str = "beginner") -> str:
+async def teach_mcp_concept(concept: str, audience: str = "beginner") -> str:
     """Create a teaching prompt for an MCP concept."""
 
     return (
@@ -200,7 +200,7 @@ def teach_mcp_concept(concept: str, audience: str = "beginner") -> str:
 
 
 @mcp.prompt
-def code_review_prompt(file_purpose: str, risk_level: str = "low") -> str:
+async def code_review_prompt(file_purpose: str, risk_level: str = "low") -> str:
     """Create a practical review prompt for code exposed through MCP."""
 
     return (
