@@ -11,7 +11,7 @@ from fastmcp import Client
 from fastmcp_learning.clients.common import (
     console_elicitation_handler,
     openai_sampling_handler,
-    project_root,
+    project_root_uri,
     run_learning_demo,
 )
 
@@ -31,7 +31,7 @@ async def async_main() -> None:
     sampling_handler = openai_sampling_handler()
     client = Client(
         args.url,
-        roots=[str(project_root())],
+        roots=[project_root_uri()],
         elicitation_handler=console_elicitation_handler,
         sampling_handler=sampling_handler,
     )

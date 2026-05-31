@@ -17,6 +17,10 @@ def project_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def project_root_uri() -> str:
+    return project_root().as_uri()
+
+
 def load_environment() -> None:
     load_dotenv(project_root() / ".env")
 
