@@ -1,0 +1,31 @@
+[project]
+name = "fastmcp-openai-learning"
+version = "0.1.0"
+description = "Beginner-friendly FastMCP server and client examples for stdio, HTTP, tools, resources, prompts, roots, elicitation, and OpenAI-backed sampling."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp[openai]>=2.14.1",
+    "openai>=2.0.0",
+    "python-dotenv>=1.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+]
+
+[project.scripts]
+mcp-learning-server = "fastmcp_learning.server:main"
+mcp-learning-stdio-client = "fastmcp_learning.clients.stdio_client:main"
+mcp-learning-http-client = "fastmcp_learning.clients.http_client:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
